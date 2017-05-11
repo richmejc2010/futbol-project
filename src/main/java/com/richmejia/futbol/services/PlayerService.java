@@ -8,13 +8,13 @@ public interface PlayerService {
 
 	Player createPlayer(Player player);
 
-	Player searchPlayer(Player player);
+	Player searchPlayer(String id);
 
 	Player addPlayer(Player player);
 
 	Player editPlayer(Player player);
 
-	Player deletePlayer(Player player);
+	String deletePlayer(String id);
 
 	List<Player> listPlayer();
 }

@@ -24,19 +24,17 @@ public class PlayerController {
 
 	@RequestMapping("/api/player/{id}")
 	public Player searchPlayer(@PathVariable(value = "id") String id) {
-		Player player = new Player(id, 0, "", 0, 0, 0);
-		return playerService.searchPlayer(player);
+		return playerService.searchPlayer(id);
 	}
 
-	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.PUT)
-	public Player editPlayer(@PathVariable(value = "id") String id) {
-		Player player = new Player(id, 0, "", 0, 0, 0);
-		return playerService.editPlayer(player);
+	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.POST)
+	public Player editPlayer(@PathVariable(value = "id") String id, Player newPlayer) {
+		return playerService.editPlayer(newPlayer);
 	}
 
 	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.DELETE)
-	public Player deletePlayer(@PathVariable(value = "id") String id) {
-		return playerService.deletePlayer(new Player("", 2, "Barcelona", 2, 2, 2));
+	public String deletePlayer(@PathVariable(value = "id") String id) {
+		return playerService.deletePlayer(id);
 	}
 
 	@RequestMapping(value = "/api/player/lists/", method = RequestMethod.GET)

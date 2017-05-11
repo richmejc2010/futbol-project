@@ -18,14 +18,13 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public Player createPlayer(Player player) {
 		// TODO Auto-generated method stub
-		Player playerBack = new Player("", 1, "Junior PlayerServiceImpl created", 1, 1, 1);
 		return repository.save(player);
 	}
 
 	@Override
-	public Player searchPlayer(Player player) {
+	public Player searchPlayer(String id) {
 		// TODO Auto-generated method stub
-		return new Player("", 1, "Junior PlayerServiceImpl Searched", 1, 1, 1);
+		return repository.findById(id);
 	}
 
 	@Override
@@ -41,13 +40,20 @@ public class PlayerServiceImpl implements PlayerService {
 	@Override
 	public Player editPlayer(Player player) {
 		// TODO Auto-generated method stub
-		return new Player("", 99999, "Ricardo Mejia Cerquera PlayerServiceImpl edited", 3333, 1111, 22222);
+		return repository.save(player);
 	}
 
 	@Override
-	public Player deletePlayer(Player player) {
+	public String deletePlayer(String id) {
 		// TODO Auto-generated method stub
-		return null;
+		String result = "Success";
+		try{
+			repository.delete(id);
+		}
+		catch (Exception e){
+			result = "Error: "+e.toString();
+		}
+		return result;
 	}
 
 	@Override
