@@ -45,7 +45,7 @@ public class PlayerController {
 		}
 	}
 
-	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updatePlayer(@PathVariable("id") String id, @RequestBody Player newPlayer) {
 		try {
 			newPlayer.setId(id);
@@ -91,9 +91,6 @@ public class PlayerController {
 			Player player = new Player(id, team, fullName, 0, 0, 0);
 			List<Player> listPlayer = playerService.listPlayers(player);
 			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
-		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
-					HttpStatus.BAD_REQUEST);
 		} catch (DataBaseException db) {
 			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
 					HttpStatus.INTERNAL_SERVER_ERROR);

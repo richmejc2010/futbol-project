@@ -97,19 +97,28 @@ public class PlayerServiceImpl implements PlayerService {
 	}
 
 	@Override
-	public List<Player> listPlayers(Player player) throws PlayerNotFoundException, DataBaseException, GenericException {
-		if (!StringUtils.isEmpty(player.getId())) {
-			List<Player> listPlayer = new ArrayList<>();
-			listPlayer.add(repositoryPlayer.findById(player.getId()));
-			return listPlayer;
-		} else if (!StringUtils.isEmpty(player.getFullName())) {
-			return repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
-		} else if (!StringUtils.isEmpty(player.getTeam().getId())) {
-			return repositoryPlayer.findByTeam(player.getTeam().getId());
-		} else{
-			return repositoryPlayer.findAll();
+	public List<Player> listPlayers(Player player) throws DataBaseException, GenericException {
+		try {
+			if (!StringUtils.isEmpty(player.getId())) {
+				List<Player> listPlayer = new ArrayList<>();
+				listPlayer.add(repositoryPlayer.findById(player.getId()));
+				return listPlayer;
+			} else if (!StringUtils.isEmpty(player.getFullName())) {
+				return repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
+			} else if (!StringUtils.isEmpty(player.getTeam().getId())) {
+				return repositoryPlayer.findByTeam(player.getTeam().getId());
+			} else {
+				return repositoryPlayer.findAll();
+			}
+		} catch (MongoSocketOpenException mse) {
+			throw new DataBaseException(mse.toString());
+		} catch (MongoTimeoutException mte) {
+			throw new DataBaseException(mte.toString());
+		} catch (DataAccessResourceFailureException darf) {
+			throw new DataBaseException(darf.toString());
+		} catch (Exception e) {
+			throw new GenericException(e.toString());
 		}
-
 	}
 
 	@Override
