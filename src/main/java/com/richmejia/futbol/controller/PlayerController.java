@@ -4,14 +4,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.richmejia.futbol.entities.MessageJson;
 import com.richmejia.futbol.entities.Player;
+import com.richmejia.futbol.entities.Team;
 import com.richmejia.futbol.exceptions.DataBaseException;
 import com.richmejia.futbol.exceptions.GenericException;
 import com.richmejia.futbol.exceptions.PlayerExistException;
@@ -24,88 +28,78 @@ public class PlayerController {
 	@Autowired
 	PlayerService playerService;
 
-	@RequestMapping(value = "/api/player/", method = RequestMethod.POST)
-	public ResponseEntity<?> createPlayer(Player newPlayer) {
+	@RequestMapping(value = "/api/player/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createPlayer(@RequestBody Player newPlayer) {
 		try {
 			String jsonResp = playerService.createPlayer(newPlayer);
 			return new ResponseEntity<>(new MessageJson("OK", jsonResp), HttpStatus.OK);
 		} catch (PlayerExistException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerExistException", pe.getMessage()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageJson("PlayerExistException", pe.getMessage()),
+					HttpStatus.BAD_REQUEST);
 		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@RequestMapping(value = "/api/player/{cc}", method = RequestMethod.POST)
-	public ResponseEntity<?> updatePlayer(@PathVariable(value = "cc") long cc, Player newPlayer) {
+	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updatePlayer(@PathVariable("id") String id, @RequestBody Player newPlayer) {
 		try {
-			newPlayer.setCc(cc);
+			newPlayer.setId(id);
 			String jsonResp = playerService.updatePlayer(newPlayer);
 			return new ResponseEntity<>(new MessageJson("OK", jsonResp), HttpStatus.OK);
 		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
+					HttpStatus.BAD_REQUEST);
 		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@RequestMapping(value = "/api/player/{cc}", method = RequestMethod.DELETE)
-	public ResponseEntity<?> deletePlayer(@PathVariable(value = "cc") long cc) {
+	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deletePlayer(@PathVariable("id") String id) {
 		try {
-			String jsonResp = playerService.deletePlayer(cc);
+			String jsonResp = playerService.deletePlayer(id);
 			return new ResponseEntity<>(new MessageJson("OK", jsonResp), HttpStatus.OK);
 		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
+					HttpStatus.BAD_REQUEST);
 		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@RequestMapping(value = "/api/player/findBy/cc/{cc}", method = RequestMethod.GET)
-	public ResponseEntity<?> listPlayersByCc(@PathVariable(value = "cc") long cc) {
+	@RequestMapping(value = "/api/player", method = RequestMethod.GET)
+	public ResponseEntity<?> listPlayers(
+			@RequestParam(value = "id", required = false) String id,
+			@RequestParam(value = "fullName", required = false) String fullName,
+			@RequestParam(value = "team", required = false) String codTeam) {
 		try {
-			Player player = playerService.playersByCc(cc);
-			return new ResponseEntity<>(player, HttpStatus.OK);
-		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()), HttpStatus.BAD_REQUEST);
-		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@RequestMapping(value = "/api/player/findBy/fullName/{fullName}", method = RequestMethod.GET)
-	public ResponseEntity<?> listPlayersByFullName(@PathVariable(value = "fullName") String fullName) {
-		try {
-			List<Player> listPlayer = playerService.listPlayersByFullName(fullName);
+			Team team = new Team();
+			team.setId(codTeam);
+			Player player = new Player(id, team, fullName, 0, 0, 0);
+			List<Player> listPlayer = playerService.listPlayers(player);
 			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
 		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
+					HttpStatus.BAD_REQUEST);
 		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@RequestMapping(value = "/api/player/findBy/", method = RequestMethod.GET)
-	public ResponseEntity<?> listPlayers() {
-		try {
-			List<Player> listPlayer = playerService.listPlayers();
-			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
-		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.toString()), HttpStatus.BAD_REQUEST);
-		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

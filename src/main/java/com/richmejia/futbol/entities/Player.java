@@ -1,14 +1,18 @@
 package com.richmejia.futbol.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class Player {
 
 	@Id
 	private String id;
 
-	private long cc;
-	private int idTeam;
+	@DBRef
+	private Team team;
+	
 	private String fullName;
 	private int position;
 	private int yellowCard;
@@ -17,10 +21,9 @@ public class Player {
 	public Player() {
 	}
 
-	public Player(String id, long cc, int idTeam, String fullName, int position, int yellowCard, int redCard) {
+	public Player(String id, Team team, String fullName, int position, int yellowCard, int redCard) {
 		this.id = id;
-		this.cc = cc;
-		this.idTeam = idTeam;
+		this.team = team;
 		this.fullName = fullName;
 		this.position = position;
 		this.yellowCard = yellowCard;
@@ -35,20 +38,12 @@ public class Player {
 		this.id = id;
 	}
 
-	public long getCc() {
-		return cc;
+	public Team getTeam() {
+		return team;
 	}
 
-	public void setCc(long cc) {
-		this.cc = cc;
-	}
-
-	public int getIdTeam() {
-		return idTeam;
-	}
-
-	public void setIdTeam(int idTeam) {
-		this.idTeam = idTeam;
+	public void setTeam(Team team) {
+		this.team = team;
 	}
 
 	public String getFullName() {

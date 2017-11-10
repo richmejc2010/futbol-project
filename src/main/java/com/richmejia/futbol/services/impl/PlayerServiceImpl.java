@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import com.mongodb.MongoSocketOpenException;
 import com.mongodb.MongoTimeoutException;
@@ -21,14 +22,14 @@ import com.richmejia.futbol.services.PlayerService;
 public class PlayerServiceImpl implements PlayerService {
 
 	@Autowired
-	private PlayerRepository repository;
+	private PlayerRepository repositoryPlayer;
 
 	@Override
 	public String createPlayer(Player player) throws PlayerExistException, DataBaseException, GenericException {
 		try {
 			String result = "Player created successfully";
-			if (playersByCc(player.getCc()) == null) {
-				repository.save(player);
+			if (playersById(player.getId()) == null) {
+				repositoryPlayer.save(player);
 			} else {
 				result = "Player already exists";
 				throw new PlayerExistException(result);
@@ -51,9 +52,8 @@ public class PlayerServiceImpl implements PlayerService {
 	public String updatePlayer(Player player) throws PlayerNotFoundException, DataBaseException, GenericException {
 		try {
 			String result = "Player updated successfully";
-			if (repository.findByCc(player.getCc()) != null) {
-				player.setId(repository.findByCc(player.getCc()).getId());
-				repository.save(player);
+			if (repositoryPlayer.findById(player.getId()) != null) {
+				repositoryPlayer.save(player);
 			} else {
 				result = "Player not updated";
 				throw new PlayerNotFoundException(result);
@@ -73,11 +73,11 @@ public class PlayerServiceImpl implements PlayerService {
 	}
 
 	@Override
-	public String deletePlayer(long cc) throws PlayerNotFoundException, DataBaseException, GenericException {
+	public String deletePlayer(String id) throws PlayerNotFoundException, DataBaseException, GenericException {
 		try {
 			String result = "Player deleted successfully";
-			if (repository.findByCc(cc) != null) {
-				repository.delete(repository.findByCc(cc).getId());
+			if (repositoryPlayer.findById(id) != null) {
+				repositoryPlayer.delete(id);
 			} else {
 				result = "Player not deleted";
 				throw new PlayerNotFoundException(result);
@@ -97,22 +97,24 @@ public class PlayerServiceImpl implements PlayerService {
 	}
 
 	@Override
-	public List<Player> listPlayers() throws PlayerNotFoundException, DataBaseException, GenericException {
-		return repository.findAll();
+	public List<Player> listPlayers(Player player) throws PlayerNotFoundException, DataBaseException, GenericException {
+		if (!StringUtils.isEmpty(player.getId())) {
+			List<Player> listPlayer = new ArrayList<>();
+			listPlayer.add(repositoryPlayer.findById(player.getId()));
+			return listPlayer;
+		} else if (!StringUtils.isEmpty(player.getFullName())) {
+			return repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
+		} else if (!StringUtils.isEmpty(player.getTeam().getId())) {
+			return repositoryPlayer.findByTeam(player.getTeam().getId());
+		} else{
+			return repositoryPlayer.findAll();
+		}
+
 	}
 
 	@Override
-	public Player playersByCc(long cc) throws PlayerNotFoundException, DataBaseException, GenericException {
-		Player player = repository.findByCc(cc);
+	public Player playersById(String id) throws PlayerNotFoundException, DataBaseException, GenericException {
+		Player player = repositoryPlayer.findById(id);
 		return player;
-	}
-
-	@Override
-	public List<Player> listPlayersByFullName(String fullName)
-			throws PlayerNotFoundException, DataBaseException, GenericException {
-		List<Player> listPlayer = new ArrayList<>();
-		listPlayer.addAll(repository.findByFullNameLike(fullName) != null ? repository.findByFullNameLike(fullName)
-				: new ArrayList<Player>());
-		return listPlayer;
 	}
 }

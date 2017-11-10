@@ -1,11 +1,14 @@
 package com.richmejia.futbol.entities;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class Team {
-	
+
 	@Id
 	private String id;
+	
 	private String name;
 	private int points;
 

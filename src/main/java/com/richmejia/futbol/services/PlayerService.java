@@ -14,12 +14,9 @@ public interface PlayerService {
 
 	String updatePlayer(Player player) throws PlayerNotFoundException, DataBaseException, GenericException;
 
-	String deletePlayer(long cc) throws PlayerNotFoundException, DataBaseException, GenericException;
+	String deletePlayer(String id) throws PlayerNotFoundException, DataBaseException, GenericException;
 
-	List<Player> listPlayers() throws PlayerNotFoundException, DataBaseException, GenericException;
+	Player playersById(String id) throws PlayerNotFoundException, DataBaseException, GenericException;
 
-	Player playersByCc(long cc) throws PlayerNotFoundException, DataBaseException, GenericException;
-
-	List<Player> listPlayersByFullName(String fullName)
-			throws PlayerNotFoundException, DataBaseException, GenericException;
+	List<Player> listPlayers(Player player) throws PlayerNotFoundException, DataBaseException, GenericException;
 }
