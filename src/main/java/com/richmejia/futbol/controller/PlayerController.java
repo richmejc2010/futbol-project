@@ -1,11 +1,15 @@
 package com.richmejia.futbol.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.richmejia.futbol.entities.MessageJson;
 import com.richmejia.futbol.entities.Player;
 import com.richmejia.futbol.entities.Team;
+import com.richmejia.futbol.entities.builder.PlayerBuilder;
 import com.richmejia.futbol.exceptions.DataBaseException;
 import com.richmejia.futbol.exceptions.GenericException;
 import com.richmejia.futbol.exceptions.PlayerExistException;
@@ -28,9 +33,14 @@ public class PlayerController {
 	@Autowired
 	PlayerService playerService;
 
-	@RequestMapping(value = "/api/player/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> createPlayer(@RequestBody Player newPlayer) {
+	@RequestMapping(value = "/v1/api/player/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createPlayer(@RequestBody @Valid Player newPlayer, BindingResult bindingResult) {
 		try {
+			if (bindingResult.hasErrors()) {
+				return new ResponseEntity<>(
+						new MessageJson("PlayerValidationException", bindingResult.getFieldError().getDefaultMessage()),
+						HttpStatus.BAD_REQUEST);
+			}
 			String jsonResp = playerService.createPlayer(newPlayer);
 			return new ResponseEntity<>(new MessageJson("OK", jsonResp), HttpStatus.OK);
 		} catch (PlayerExistException pe) {
@@ -45,7 +55,25 @@ public class PlayerController {
 		}
 	}
 
-	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> searchPlayer(@PathVariable("id") String id) {
+		try {
+			List<Player> listPlayer = new ArrayList<>();
+			listPlayer.add(playerService.playersById(id));
+			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
+		} catch (PlayerNotFoundException pe) {
+			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
+					HttpStatus.BAD_REQUEST);
+		} catch (DataBaseException db) {
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (GenericException ge) {
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updatePlayer(@PathVariable("id") String id, @RequestBody Player newPlayer) {
 		try {
 			newPlayer.setId(id);
@@ -63,7 +91,7 @@ public class PlayerController {
 		}
 	}
 
-	@RequestMapping(value = "/api/player/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<?> deletePlayer(@PathVariable("id") String id) {
 		try {
 			String jsonResp = playerService.deletePlayer(id);
@@ -80,15 +108,15 @@ public class PlayerController {
 		}
 	}
 
-	@RequestMapping(value = "/api/player", method = RequestMethod.GET)
-	public ResponseEntity<?> listPlayers(
-			@RequestParam(value = "id", required = false) String id,
+	@RequestMapping(value = "/v1/api/player", method = RequestMethod.GET)
+	public ResponseEntity<?> listPlayers(@RequestParam(value = "id", required = false) String id,
 			@RequestParam(value = "fullName", required = false) String fullName,
 			@RequestParam(value = "team", required = false) String codTeam) {
 		try {
 			Team team = new Team();
 			team.setId(codTeam);
-			Player player = new Player(id, team, fullName, 0, 0, 0);
+			Player player = PlayerBuilder.getInstance().createPlayer().withId(id).withFullName(fullName).withTeam(team)
+					.build();
 			List<Player> listPlayer = playerService.listPlayers(player);
 			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
 		} catch (DataBaseException db) {

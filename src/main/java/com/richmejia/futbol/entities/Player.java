@@ -1,5 +1,9 @@
 package com.richmejia.futbol.entities;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,27 +12,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Player {
 
 	@Id
+	@NotNull(message = "Player Id cannot be null")
+	@NotBlank(message = "Player Id cannot be empty")
 	private String id;
 
 	@DBRef
 	private Team team;
-	
+
 	private String fullName;
-	private int position;
+
+	@DBRef
+	private Position position;
+
+	@Min(value = 0, message = "Yellow Card should not be less than 0")
 	private int yellowCard;
+
+	@Min(value = 0, message = "Red Card should not be less than 0")
 	private int redCard;
-
-	public Player() {
-	}
-
-	public Player(String id, Team team, String fullName, int position, int yellowCard, int redCard) {
-		this.id = id;
-		this.team = team;
-		this.fullName = fullName;
-		this.position = position;
-		this.yellowCard = yellowCard;
-		this.redCard = redCard;
-	}
 
 	public String getId() {
 		return id;
@@ -54,11 +54,11 @@ public class Player {
 		this.fullName = fullName;
 	}
 
-	public int getPosition() {
+	public Position getPosition() {
 		return position;
 	}
 
-	public void setPosition(int position) {
+	public void setPosition(Position position) {
 		this.position = position;
 	}
 

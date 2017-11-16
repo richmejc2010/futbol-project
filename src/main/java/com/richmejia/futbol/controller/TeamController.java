@@ -29,6 +29,12 @@ public class TeamController {
 	@RequestMapping(value = "/api/team/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createTeam(@RequestBody Team newTeam) {
 		try {
+			//Validar que name venga
+			//Validar que name venga
+			//Validar que name venga
+			//Validar que name venga
+			//Validar que name venga
+			//Validar que name venga
 			String jsonResp = teamService.createTeam(newTeam);
 			return new ResponseEntity<>(new MessageJson("OK", jsonResp), HttpStatus.OK);
 		} catch (TeamExistException pe) {

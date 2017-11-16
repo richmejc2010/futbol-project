@@ -7,23 +7,21 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Team {
+public class Position {
 
 	@Id
-	@NotNull(message = "Team Id cannot be null")
-	@NotBlank(message = "Team Id cannot be empty")
+	@NotNull(message = "Position Id cannot be null")
+	@NotBlank(message = "Position Id cannot be empty")
 	private String id;
 	
 	private String name;
-	private int points;
 
-	public Team() {
+	public Position() {
 	}
 
-	public Team(String id, String name, int points) {
+	public Position(String id, String name) {
 		this.id = id;
 		this.name = name;
-		this.points = points;
 	}
 
 	public String getId() {
@@ -41,13 +39,4 @@ public class Team {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public int getPoints() {
-		return points;
-	}
-
-	public void setPoints(int points) {
-		this.points = points;
-	}
-
 }

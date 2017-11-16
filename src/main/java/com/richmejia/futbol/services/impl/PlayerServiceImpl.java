@@ -104,7 +104,8 @@ public class PlayerServiceImpl implements PlayerService {
 				listPlayer.add(repositoryPlayer.findById(player.getId()));
 				return listPlayer;
 			} else if (!StringUtils.isEmpty(player.getFullName())) {
-				return repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
+				List<Player> listPlayer = repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
+				return listPlayer == null ? new ArrayList<>() : listPlayer;
 			} else if (!StringUtils.isEmpty(player.getTeam().getId())) {
 				return repositoryPlayer.findByTeam(player.getTeam().getId());
 			} else {
