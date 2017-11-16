@@ -13,7 +13,7 @@ public class Position {
 	@NotNull(message = "Position Id cannot be null")
 	@NotBlank(message = "Position Id cannot be empty")
 	private String id;
-	
+
 	private String name;
 
 	public Position() {

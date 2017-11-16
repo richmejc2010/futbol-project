@@ -11,6 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Player {
 
+	public Player(){
+		
+	}
+	
 	@Id
 	@NotNull(message = "Player Id cannot be null")
 	@NotBlank(message = "Player Id cannot be empty")

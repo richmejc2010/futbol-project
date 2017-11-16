@@ -16,7 +16,5 @@ public interface PlayerService {
 
 	String deletePlayer(String id) throws PlayerNotFoundException, DataBaseException, GenericException;
 
-	Player playersById(String id) throws PlayerNotFoundException, DataBaseException, GenericException;
-
 	List<Player> listPlayers(Player player) throws DataBaseException, GenericException;
 }

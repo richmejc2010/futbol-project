@@ -55,24 +55,6 @@ public class PlayerController {
 		}
 	}
 
-	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> searchPlayer(@PathVariable("id") String id) {
-		try {
-			List<Player> listPlayer = new ArrayList<>();
-			listPlayer.add(playerService.playersById(id));
-			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
-		} catch (PlayerNotFoundException pe) {
-			return new ResponseEntity<>(new MessageJson("PlayerNotFoundException", pe.getMessage()),
-					HttpStatus.BAD_REQUEST);
-		} catch (DataBaseException db) {
-			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		} catch (GenericException ge) {
-			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
-					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updatePlayer(@PathVariable("id") String id, @RequestBody Player newPlayer) {
 		try {
@@ -113,10 +95,24 @@ public class PlayerController {
 			@RequestParam(value = "fullName", required = false) String fullName,
 			@RequestParam(value = "team", required = false) String codTeam) {
 		try {
-			Team team = new Team();
-			team.setId(codTeam);
+			Team team = new Team(codTeam, "",0);
 			Player player = PlayerBuilder.getInstance().createPlayer().withId(id).withFullName(fullName).withTeam(team)
 					.build();
+			List<Player> listPlayer = playerService.listPlayers(player);
+			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
+		} catch (DataBaseException db) {
+			return new ResponseEntity<>(new MessageJson("DataBaseException", db.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (GenericException ge) {
+			return new ResponseEntity<>(new MessageJson("GenericException", ge.getMessage()),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@RequestMapping(value = "/v1/api/player/{id}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> searchPlayer(@PathVariable("id") String id) {
+		try {
+			Player player = PlayerBuilder.getInstance().createPlayer().withId(id).build();
 			List<Player> listPlayer = playerService.listPlayers(player);
 			return new ResponseEntity<>(listPlayer, HttpStatus.OK);
 		} catch (DataBaseException db) {

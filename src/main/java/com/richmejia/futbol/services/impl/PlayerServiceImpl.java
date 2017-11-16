@@ -28,7 +28,7 @@ public class PlayerServiceImpl implements PlayerService {
 	public String createPlayer(Player player) throws PlayerExistException, DataBaseException, GenericException {
 		try {
 			String result = "Player created successfully";
-			if (playersById(player.getId()) == null) {
+			if (repositoryPlayer.findById(player.getId()) == null) {
 				repositoryPlayer.save(player);
 			} else {
 				result = "Player already exists";
@@ -101,8 +101,9 @@ public class PlayerServiceImpl implements PlayerService {
 		try {
 			if (!StringUtils.isEmpty(player.getId())) {
 				List<Player> listPlayer = new ArrayList<>();
-				listPlayer.add(repositoryPlayer.findById(player.getId()));
-				return listPlayer;
+				player = repositoryPlayer.findById(player.getId());
+				listPlayer.add(player);
+				return player == null ? new ArrayList<>() : listPlayer;
 			} else if (!StringUtils.isEmpty(player.getFullName())) {
 				List<Player> listPlayer = repositoryPlayer.findByFullNameContainingIgnoreCase(player.getFullName());
 				return listPlayer == null ? new ArrayList<>() : listPlayer;
@@ -120,11 +121,5 @@ public class PlayerServiceImpl implements PlayerService {
 		} catch (Exception e) {
 			throw new GenericException(e.toString());
 		}
-	}
-
-	@Override
-	public Player playersById(String id) throws PlayerNotFoundException, DataBaseException, GenericException {
-		Player player = repositoryPlayer.findById(id);
-		return player;
 	}
 }

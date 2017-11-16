@@ -68,9 +68,7 @@ public class PositionServiceImpl implements PositionService {
 	public List<Position> listPosition() {
 		// TODO Auto-generated method stub
 		List<Position> listPosition = new ArrayList<Position>();
-		Position position = new Position();
-		position.setId("0");
-		position.setName("GoalKeeper");
+		Position position = new Position("0", "GoalKeeper");
 		listPosition.add(position);
 
 		return listPosition;

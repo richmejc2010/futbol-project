@@ -68,10 +68,7 @@ public class TeamServiceImpl implements TeamService {
 	public List<Team> listTeam() {
 		// TODO Auto-generated method stub
 		List<Team> listTeam = new ArrayList<Team>();
-		Team team = new Team();
-		team.setId("0");
-		team.setPoints(3);
-		team.setName("Richard Mejia PlayerServiceImpl listed");
+		Team team = new Team("0", "RpMc", 3);
 		listTeam.add(team);
 
 		return listTeam;
