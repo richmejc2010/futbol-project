@@ -1,9 +1,9 @@
-package com.richmejia.futbol.services.impl;
+package com.richmejia.techtalk.services.impl;
 
 import java.util.List;
 
-import com.richmejia.futbol.entities.Login;
-import com.richmejia.futbol.services.LoginService;
+import com.richmejia.techtalk.entities.Login;
+import com.richmejia.techtalk.services.LoginService;
 
 public class LoginServiceImpl implements LoginService {
 

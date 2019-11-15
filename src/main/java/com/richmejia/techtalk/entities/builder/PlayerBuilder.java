@@ -1,8 +1,8 @@
-package com.richmejia.futbol.entities.builder;
+package com.richmejia.techtalk.entities.builder;
 
-import com.richmejia.futbol.entities.Player;
-import com.richmejia.futbol.entities.Position;
-import com.richmejia.futbol.entities.Team;
+import com.richmejia.techtalk.entities.Player;
+import com.richmejia.techtalk.entities.Position;
+import com.richmejia.techtalk.entities.Team;
 
 public class PlayerBuilder {
 

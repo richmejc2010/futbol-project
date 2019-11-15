@@ -1,4 +1,4 @@
-package com.richmejia.futbol.entities;
+package com.richmejia.techtalk.entities;
 
 import org.springframework.data.annotation.Id;
 

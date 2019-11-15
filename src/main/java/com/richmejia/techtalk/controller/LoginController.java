@@ -1,4 +1,4 @@
-package com.richmejia.futbol.controller;
+package com.richmejia.techtalk.controller;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.richmejia.futbol.entities.Login;
-import com.richmejia.futbol.services.LoginService;
-import com.richmejia.futbol.services.impl.LoginServiceImpl;
+import com.richmejia.techtalk.entities.Login;
+import com.richmejia.techtalk.services.LoginService;
+import com.richmejia.techtalk.services.impl.LoginServiceImpl;
 
 @RestController
 public class LoginController {

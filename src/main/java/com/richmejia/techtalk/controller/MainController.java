@@ -1,4 +1,4 @@
-package com.richmejia.futbol.controller;
+package com.richmejia.techtalk.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

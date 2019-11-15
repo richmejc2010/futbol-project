@@ -1,19 +1,19 @@
-package com.richmejia.futbol.repositories;
+package com.richmejia.techtalk.repositories;
 
 import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 //import org.springframework.data.mongodb.repository.Query;
 
-import com.richmejia.futbol.entities.Player;
+import com.richmejia.techtalk.entities.Player;
 
 public interface PlayerRepository extends MongoRepository<Player, String> {
 
-	public Player findById(String id);
+	Player findById(String id);
 
-	public List<Player> findByFullNameContainingIgnoreCase(String fullName);
+	List<Player> findByFullNameContainingIgnoreCase(String fullName);
 
-	public List<Player> findByTeam(String idTeam);
+	List<Player> findByTeam(String idTeam);
 
 	// @Query("{'$or' : [{'fullName' : {$regex : ?0, $options: 'i'}}, "
 	// + "{'team' : ?1}]}") //or

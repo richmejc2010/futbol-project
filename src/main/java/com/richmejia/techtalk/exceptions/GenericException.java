@@ -1,4 +1,4 @@
-package com.richmejia.futbol.exceptions;
+package com.richmejia.techtalk.exceptions;
 
 public class GenericException extends Exception {
 
