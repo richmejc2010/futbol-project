@@ -9,10 +9,6 @@ public class GenericException extends Exception {
 		return message;
 	}
 
-	public GenericException() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public GenericException(String message) {
 		// TODO Auto-generated constructor stub
 		this.message = message;

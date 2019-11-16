@@ -9,10 +9,6 @@ public class DataBaseException extends Exception {
 		return message;
 	}
 
-	public DataBaseException() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public DataBaseException(String message) {
 		// TODO Auto-generated constructor stub
 		this.message = message;

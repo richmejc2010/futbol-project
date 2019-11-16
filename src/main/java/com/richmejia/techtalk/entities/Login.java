@@ -10,10 +10,6 @@ public class Login {
 	private String name;
 	private int profile;
 
-	public Login() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public Login(int id, String user, String password, String name, int profile) {
 		this.id = id;
 		this.user = user;
