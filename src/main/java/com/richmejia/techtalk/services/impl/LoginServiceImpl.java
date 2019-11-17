@@ -16,9 +16,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginServiceImpl implements LoginService {
 
-
 	@Autowired
 	private LoginRepository loginRepository;
+
+	@Override
+	public Login createUser(Login login) throws DataBaseException, GenericException {
+		// TODO Auto-generated method stub
+		try {
+			return loginRepository.save(login);
+		} catch (MongoSocketOpenException mse) {
+			throw new DataBaseException(mse.toString());
+		} catch (MongoTimeoutException mte) {
+			throw new DataBaseException(mte.toString());
+		} catch (DataAccessResourceFailureException darf) {
+			throw new DataBaseException(darf.toString());
+		} catch (Exception e) {
+			throw new GenericException(e.toString());
+		}
+	}
 
 	@Override
 	public List<Login> listUsers() throws DataBaseException, GenericException {

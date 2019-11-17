@@ -42,7 +42,22 @@ public class LoginController {
 		}
 	}
 */
-	@RequestMapping(value = "/api/login/lists/", method = RequestMethod.GET)
+	@RequestMapping(value = "/api/login/", method = RequestMethod.POST)
+	public Login createLogin() {
+		try {
+			LoginService loginService = new LoginServiceImpl();
+			Login login = new Login(0,"rpmc","123", "richard", 0);
+			return loginService.createUser(login);
+		} catch (DataBaseException db) {
+			db.getMessage();
+			return new Login(0,db.getMessage(),"DataBaseException", "DataBaseException", 0);
+		} catch (GenericException ge) {
+			ge.getMessage();
+			return new Login(0,ge.getMessage(),"GenericException", "GenericException", 0);
+		}
+	}
+
+	@RequestMapping(value = "/api/login/listLogin/", method = RequestMethod.GET)
 	public List<Login> listLogins() {
 		try {
 			LoginService loginService = new LoginServiceImpl();
