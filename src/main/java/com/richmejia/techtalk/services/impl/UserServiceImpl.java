@@ -4,26 +4,26 @@ import java.util.List;
 
 import com.mongodb.MongoSocketOpenException;
 import com.mongodb.MongoTimeoutException;
-import com.richmejia.techtalk.entities.Login;
+import com.richmejia.techtalk.entities.User;
 import com.richmejia.techtalk.exceptions.DataBaseException;
 import com.richmejia.techtalk.exceptions.GenericException;
-import com.richmejia.techtalk.repositories.LoginRepository;
-import com.richmejia.techtalk.services.LoginService;
+import com.richmejia.techtalk.repositories.UserRepository;
+import com.richmejia.techtalk.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LoginServiceImpl implements LoginService {
+public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private LoginRepository loginRepository;
+	private UserRepository userRepository;
 
 	@Override
-	public Login createUser(Login login) throws DataBaseException, GenericException {
+	public User addUser(User user) throws DataBaseException, GenericException {
 		// TODO Auto-generated method stub
 		try {
-			return loginRepository.save(login);
+			return userRepository.save(user);
 		} catch (MongoSocketOpenException mse) {
 			throw new DataBaseException(mse.toString());
 		} catch (MongoTimeoutException mte) {
@@ -36,10 +36,10 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public List<Login> listUsers() throws DataBaseException, GenericException {
+	public List<User> listUsers() throws DataBaseException, GenericException {
 		// TODO Auto-generated method stub
 		try {
-			return loginRepository.findAll();
+			return userRepository.findAll();
 		} catch (MongoSocketOpenException mse) {
 			throw new DataBaseException(mse.toString());
 		} catch (MongoTimeoutException mte) {
@@ -50,5 +50,4 @@ public class LoginServiceImpl implements LoginService {
 			throw new GenericException(e.toString());
 		}
 	}
-
 }

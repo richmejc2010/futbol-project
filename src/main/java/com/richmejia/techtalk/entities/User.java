@@ -8,28 +8,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class Login {
-	@Id
-	@NotNull(message = "Id cannot be null")
-	@NotBlank(message = "Id cannot be empty")
+public class User {
+	public User(){
+
+	}
+	
 	private int id;
 
-	@NotNull(message = "user cannot be null")
-	@NotBlank(message = "user cannot be empty")
 	private String user;
 
-	@NotNull(message = "password cannot be null")
-	@NotBlank(message = "password cannot be empty")
 	private String password;
 
-	@NotNull(message = "name cannot be null")
-	@NotBlank(message = "name cannot be empty")
 	private String name;
 
 	@Min(value = 0, message = "profile should not be less than 0")
 	private int profile;
 
-	public Login(int id, String user, String password, String name, int profile) {
+	public User(int id, String user, String password, String name, int profile) {
 		this.id = id;
 		this.user = user;
 		this.password = password;
